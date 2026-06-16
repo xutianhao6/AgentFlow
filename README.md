@@ -8,6 +8,7 @@
   <img alt="frontend" src="https://img.shields.io/badge/frontend-Vue3%20%2B%20Vue%20Flow-42b883">
   <img alt="backend" src="https://img.shields.io/badge/backend-FastAPI%20%2B%20LlamaIndex-009688">
   <img alt="zero-infra" src="https://img.shields.io/badge/run-zero%20infra%20(SQLite)-blue">
+  <img alt="license" src="https://img.shields.io/badge/license-MIT-green">
 </p>
 
 ---
@@ -28,6 +29,8 @@
 - [测试](#测试)
 - [生产部署](#生产部署)
 - [常见问题](#常见问题)
+- [贡献](#贡献)
+- [许可证](#许可证)
 
 ---
 
@@ -318,6 +321,20 @@ A：向量落盘到 `backend/storage/chroma`，元数据存数据库，重启自
 
 **Q：画布删不掉开始/结束节点？**
 A：这是有意保护——工作流必须有 start/end。其余节点可用 `Delete` 删除。
+
+---
+
+## 贡献
+
+欢迎任何形式的贡献——Bug 反馈、功能建议、文档改进、代码 PR。提交前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+简要流程：Fork → 切特性分支 → 自测（`pytest` + `npm run build`）→ 发起 PR。提交信息建议遵循 [Conventional Commits](https://www.conventionalcommits.org/)。
+
+如果这个项目对你有帮助，欢迎点个 ⭐ Star 支持一下！
+
+## 许可证
+
+本项目基于 [MIT 许可证](LICENSE) 开源——可自由使用、修改、商用，只需保留版权声明。
 
 ---
 
