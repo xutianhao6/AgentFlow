@@ -1,0 +1,13 @@
+name: weather_tool
+version: 1.0.0
+type: tool
+author: agentflow
+description: 查询城市天气
+icon: weather.svg
+entrypoint: main.py
+io_spec:
+  inputs:
+    - {name: city, type: string, required: true, description: 城市名}
+  outputs:
+    - {name: temperature, type: number}
+    - {name: description, type: string}

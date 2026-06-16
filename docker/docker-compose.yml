@@ -1,0 +1,31 @@
+version: "3.9"
+
+# Infrastructure for AgentFlow. The backend also runs fully without these
+# (SQLite + in-memory Redis/vector fallbacks), but this brings up the
+# production-style stack: MySQL + Redis + a vector DB (Chroma).
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: agentflow
+      MYSQL_DATABASE: agentflow
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  chroma:
+    image: chromadb/chroma:latest
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+
+volumes:
+  mysql_data:
+  chroma_data:
