@@ -38,15 +38,15 @@ async function runSingle() {
 </script>
 
 <template>
-  <div v-if="selectedNode" style="width:380px;border-left:1px solid #f0f0f0;background:#fff;overflow:auto;padding:14px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+  <div v-if="selectedNode" class="config">
+    <div class="config__head">
       <strong>{{ selectedNode.data.label || nodeType }} 配置</strong>
       <a-space>
         <a @click="singleRunOpen = true">单步运行</a>
-        <a style="color:#ff4d4f" @click="deleteNode(selectedNode.id)">删除节点</a>
+        <a class="config__del" @click="deleteNode(selectedNode.id)">删除节点</a>
       </a-space>
     </div>
-    <div style="font-size:11px;color:#bbb;margin-bottom:10px">节点 ID：{{ selectedNode.id }}</div>
+    <div class="config__id af-mono">节点 ID：{{ selectedNode.id }}</div>
 
     <LLMConfig v-if="nodeType === 'llm'" :data="selectedNode.data" @update="onUpdate" />
     <KnowledgeConfig v-else-if="nodeType === 'knowledge_retrieval'" :data="selectedNode.data" @update="onUpdate" />
@@ -58,12 +58,48 @@ async function runSingle() {
     <GenericConfig v-else :data="selectedNode.data" :node-type="nodeType" @update="onUpdate" />
 
     <a-modal v-model:open="singleRunOpen" title="单步运行（仅执行此节点）" :footer="null">
-      <a-textarea v-model:value="singleInputs" :rows="4" placeholder='{"query":"测试输入"}' />
-      <a-button type="primary" style="margin:10px 0" @click="runSingle">运行</a-button>
-      <pre v-if="singleResult" style="background:#f5f5f5;padding:10px;border-radius:6px;max-height:300px;overflow:auto">{{ JSON.stringify(singleResult, null, 2) }}</pre>
+      <a-textarea
+        v-model:value="singleInputs"
+        class="af-mono"
+        :rows="4"
+        placeholder='{"query":"测试输入"}'
+      />
+      <a-button type="primary" style="margin: 10px 0" @click="runSingle">运行</a-button>
+      <pre v-if="singleResult" class="af-code-block" style="max-height: 300px">{{
+        JSON.stringify(singleResult, null, 2)
+      }}</pre>
     </a-modal>
   </div>
-  <div v-else style="width:280px;border-left:1px solid #f0f0f0;background:#fff;padding:20px;color:#999">
-    选择一个节点以编辑配置
+  <div v-else class="config config--empty">
+    <span>选择一个节点以编辑配置</span>
   </div>
 </template>
+
+<style scoped>
+.config {
+  width: 380px;
+  border-left: 1px solid var(--af-border);
+  background: var(--af-surface);
+  overflow: auto;
+  padding: 16px;
+}
+.config__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.config__del {
+  color: var(--af-danger);
+}
+.config__id {
+  font-size: 11px;
+  color: var(--af-text-tertiary);
+  margin-bottom: 12px;
+}
+.config--empty {
+  width: 280px;
+  padding: 24px;
+  color: var(--af-text-tertiary);
+}
+</style>

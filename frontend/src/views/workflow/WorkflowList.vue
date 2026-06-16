@@ -6,6 +6,7 @@ import { workflowApi } from '@/api/workflow'
 import type { WorkflowSummary } from '@/types/dsl'
 import PageHeader from '@/components/common/PageHeader.vue'
 import { formatTime } from '@/utils/format'
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 
 const router = useRouter()
 const items = ref<WorkflowSummary[]>([])
@@ -53,28 +54,64 @@ onMounted(load)
   <div class="af-page">
     <PageHeader title="工作流" subtitle="拖拽节点、连线、配置，编排你的 AI 工作流">
       <template #extra>
-        <a-button type="primary" @click="createOpen = true">+ 新建工作流</a-button>
+        <a-button type="primary" @click="createOpen = true">
+          <template #icon><PlusOutlined /></template>
+          新建工作流
+        </a-button>
       </template>
     </PageHeader>
 
-    <a-table :data-source="items" :loading="loading" row-key="id" :pagination="false">
-      <a-table-column title="名称" data-index="name" />
-      <a-table-column title="描述" data-index="description" />
-      <a-table-column title="版本" data-index="version" width="80" />
-      <a-table-column title="更新时间" width="200">
-        <template #default="{ record }">{{ formatTime(record.updated_at) }}</template>
-      </a-table-column>
-      <a-table-column title="操作" width="160">
-        <template #default="{ record }">
-          <a @click="edit(record.id)">编辑</a>
-          <a-divider type="vertical" />
-          <a style="color:#ff4d4f" @click="remove(record.id)">删除</a>
-        </template>
-      </a-table-column>
-    </a-table>
+    <div class="af-card" style="padding: 4px 4px 0">
+      <a-table :data-source="items" :loading="loading" row-key="id" :pagination="false">
+        <a-table-column title="名称" data-index="name">
+          <template #default="{ record }">
+            <a class="wf-name" @click="edit(record.id)">{{ record.name }}</a>
+          </template>
+        </a-table-column>
+        <a-table-column title="描述" data-index="description">
+          <template #default="{ record }">
+            <span class="af-muted">{{ record.description || '—' }}</span>
+          </template>
+        </a-table-column>
+        <a-table-column title="版本" width="90">
+          <template #default="{ record }">
+            <a-tag color="processing" class="af-mono">v{{ record.version }}</a-tag>
+          </template>
+        </a-table-column>
+        <a-table-column title="更新时间" width="200">
+          <template #default="{ record }">
+            <span class="af-muted">{{ formatTime(record.updated_at) }}</span>
+          </template>
+        </a-table-column>
+        <a-table-column title="操作" width="120" align="right">
+          <template #default="{ record }">
+            <a-tooltip title="编辑">
+              <a-button type="text" size="small" @click="edit(record.id)">
+                <template #icon><EditOutlined /></template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="删除">
+              <a-button type="text" size="small" danger @click="remove(record.id)">
+                <template #icon><DeleteOutlined /></template>
+              </a-button>
+            </a-tooltip>
+          </template>
+        </a-table-column>
+      </a-table>
+    </div>
 
     <a-modal v-model:open="createOpen" title="新建工作流" @ok="create">
       <a-input v-model:value="newName" placeholder="工作流名称" />
     </a-modal>
   </div>
 </template>
+
+<style scoped>
+.wf-name {
+  font-weight: 600;
+  color: var(--af-text);
+}
+.wf-name:hover {
+  color: var(--af-primary);
+}
+</style>

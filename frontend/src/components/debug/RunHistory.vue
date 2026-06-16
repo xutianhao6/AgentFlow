@@ -38,10 +38,10 @@ async function openDetail(runId: string) {
         <a-list-item>
           <a-space direction="vertical" style="width:100%">
             <a-space>
-              <a-tag :color="item.status === 'succeeded' ? 'green' : 'red'">{{ item.status }}</a-tag>
-              <span style="color:#999">{{ item.mode }}</span>
-              <span style="color:#999">{{ item.total_ms }}ms</span>
-              <span style="color:#999">{{ formatTime(item.created_at) }}</span>
+              <a-tag :color="item.status === 'succeeded' ? 'success' : 'error'">{{ item.status }}</a-tag>
+              <span class="af-mono af-dim">{{ item.mode }}</span>
+              <span class="af-mono af-dim">{{ item.total_ms }}ms</span>
+              <span class="af-dim">{{ formatTime(item.created_at) }}</span>
               <a @click="openDetail(item.run_id)">查看轨迹</a>
             </a-space>
             <a-collapse v-if="activeRun === item.run_id && detailLogs.length">

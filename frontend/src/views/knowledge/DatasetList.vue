@@ -5,6 +5,8 @@ import { message, Modal } from 'ant-design-vue'
 import { knowledgeApi } from '@/api/knowledge'
 import { useKnowledgeStore } from '@/stores/knowledge'
 import PageHeader from '@/components/common/PageHeader.vue'
+import EmptyState from '@/components/common/EmptyState.vue'
+import { PlusOutlined, DatabaseOutlined, DeleteOutlined } from '@ant-design/icons-vue'
 
 const router = useRouter()
 const store = useKnowledgeStore()
@@ -32,23 +34,36 @@ onMounted(() => store.loadDatasets())
 <template>
   <div class="af-page">
     <PageHeader title="知识库" subtitle="上传文档构建知识库，供「知识检索节点」做 RAG">
-      <template #extra><a-button type="primary" @click="createOpen = true">+ 新建知识库</a-button></template>
+      <template #extra>
+        <a-button type="primary" @click="createOpen = true">
+          <template #icon><PlusOutlined /></template>
+          新建知识库
+        </a-button>
+      </template>
     </PageHeader>
 
     <a-row :gutter="16">
-      <a-col v-for="d in store.datasets" :key="d.id" :span="8" style="margin-bottom:16px">
-        <a-card hoverable @click="router.push(`/datasets/${d.id}`)">
-          <template #title>{{ d.name }}</template>
-          <template #extra>
-            <a-tag :color="d.index_method === 'high_quality' ? 'blue' : 'orange'">
+      <a-col v-for="d in store.datasets" :key="d.id" :xs="24" :sm="12" :lg="8" style="margin-bottom: 16px">
+        <a-card hoverable class="ds-card" @click="router.push(`/datasets/${d.id}`)">
+          <div class="ds-card__head">
+            <span class="ds-card__icon"><DatabaseOutlined /></span>
+            <span class="ds-card__name">{{ d.name }}</span>
+            <a-tag :color="d.index_method === 'high_quality' ? 'processing' : 'orange'">
               {{ d.index_method === 'high_quality' ? '高质量' : '经济' }}
             </a-tag>
-          </template>
-          <div style="color:#999;min-height:40px">{{ d.description || '暂无描述' }}</div>
-          <a style="color:#ff4d4f" @click.stop="remove(d.id)">删除</a>
+          </div>
+          <div class="ds-card__desc af-muted">{{ d.description || '暂无描述' }}</div>
+          <div class="ds-card__foot">
+            <a-button type="text" size="small" danger @click.stop="remove(d.id)">
+              <template #icon><DeleteOutlined /></template>
+              删除
+            </a-button>
+          </div>
         </a-card>
       </a-col>
     </a-row>
+
+    <EmptyState v-if="!store.datasets.length" description="还没有知识库，点击右上角新建" />
 
     <a-modal v-model:open="createOpen" title="新建知识库" @ok="create">
       <a-form layout="vertical">
@@ -64,3 +79,44 @@ onMounted(() => store.loadDatasets())
     </a-modal>
   </div>
 </template>
+
+<style scoped>
+.ds-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ds-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--af-radius);
+  background: var(--af-primary-soft);
+  color: var(--af-primary);
+  font-size: 17px;
+  flex: none;
+}
+.ds-card__name {
+  font-weight: 600;
+  font-size: 15px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ds-card__desc {
+  min-height: 40px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.ds-card__foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--af-border-light);
+}
+</style>

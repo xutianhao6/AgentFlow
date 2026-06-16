@@ -117,7 +117,7 @@ function onDragOver(e: DragEvent) {
 </script>
 
 <template>
-  <div style="flex:1;height:100%" @drop="onDrop" @dragover="onDragOver">
+  <div class="af-canvas" @drop="onDrop" @dragover="onDragOver">
     <VueFlow
       v-model:nodes="store.nodes"
       v-model:edges="store.edges"
@@ -128,7 +128,7 @@ function onDragOver(e: DragEvent) {
       :multi-selection-key-code="['Shift', 'Meta', 'Control']"
       fit-view-on-init
     >
-      <Background pattern-color="#ddd" :gap="16" />
+      <Background pattern-color="#1e293b" :gap="18" :size="1.5" />
       <Controls />
       <MiniMap />
     </VueFlow>

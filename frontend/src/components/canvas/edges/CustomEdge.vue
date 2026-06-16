@@ -26,20 +26,29 @@ const path = computed(() =>
 </script>
 
 <template>
-  <BaseEdge :id="id" :path="path[0]" />
+  <BaseEdge :id="id" :path="path[0]" :style="{ stroke: '#475569', strokeWidth: 1.5 }" />
   <EdgeLabelRenderer v-if="label">
     <div
+      class="edge-label"
       :style="{
-        position: 'absolute',
         transform: `translate(-50%, -50%) translate(${path[1]}px, ${path[2]}px)`,
-        background: '#1677ff',
-        color: '#fff',
-        fontSize: '11px',
-        padding: '1px 6px',
-        borderRadius: '8px',
       }"
     >
       {{ label }}
     </div>
   </EdgeLabelRenderer>
 </template>
+
+<style scoped>
+.edge-label {
+  position: absolute;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-family: var(--af-font-mono);
+  font-size: 11px;
+  padding: 2px 7px;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  pointer-events: none;
+}
+</style>

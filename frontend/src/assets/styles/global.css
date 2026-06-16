@@ -1,31 +1,324 @@
-* { box-sizing: border-box; }
-html, body, #app { height: 100%; margin: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f5f6fa; }
+/* ============================================================
+   AgentFlow 设计系统 —— Design Tokens（唯一 Source of Truth）
+   与 src/theme.ts 镜像；亮色应用外壳 + 暗色工作流画布
+   ============================================================ */
+:root {
+  /* 品牌色 */
+  --af-primary: #6366f1;
+  --af-primary-hover: #818cf8;
+  --af-primary-active: #4f46e5;
+  --af-primary-soft: #eef2ff;
 
-.af-layout { height: 100vh; display: flex; flex-direction: column; }
-.af-page { padding: 16px 24px; }
-.af-toolbar { display: flex; align-items: center; gap: 8px; }
-.af-flex-fill { flex: 1; min-height: 0; }
+  /* 语义色 */
+  --af-success: #22c55e;
+  --af-warning: #f59e0b;
+  --af-danger: #ef4444;
+  --af-info: #6366f1;
 
-/* node panel */
+  /* 文本 */
+  --af-text: #0f172a; /* slate-900 */
+  --af-text-secondary: #475569; /* slate-600 */
+  --af-text-tertiary: #94a3b8; /* slate-400 */
+
+  /* 边框 / 表面 */
+  --af-border: #e2e8f0;
+  --af-border-light: #f1f5f9;
+  --af-bg: #f8fafc;
+  --af-surface: #ffffff;
+  --af-sider: #ffffff;
+
+  /* 暗色画布 */
+  --af-canvas-bg: #0f172a;
+  --af-canvas-grid: #1e293b;
+  --af-node-bg: #1e293b;
+  --af-node-bg-soft: #243044;
+  --af-node-border: #334155;
+  --af-node-text: #f8fafc;
+  --af-node-text-dim: #94a3b8;
+
+  /* 间距（8px 基准） */
+  --af-sp-1: 4px;
+  --af-sp-2: 8px;
+  --af-sp-3: 12px;
+  --af-sp-4: 16px;
+  --af-sp-6: 24px;
+  --af-sp-8: 32px;
+
+  /* 圆角 */
+  --af-radius-sm: 6px;
+  --af-radius: 8px;
+  --af-radius-lg: 12px;
+
+  /* 阴影 */
+  --af-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --af-shadow-md: 0 2px 8px rgba(15, 23, 42, 0.08);
+  --af-shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.12);
+  --af-shadow-primary: 0 4px 16px rgba(99, 102, 241, 0.18);
+
+  /* z-index scale */
+  --af-z-navbar: 20;
+  --af-z-drawer: 30;
+  --af-z-popover: 40;
+  --af-z-modal: 50;
+
+  /* 字体 */
+  --af-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Microsoft YaHei', sans-serif;
+  --af-font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+body {
+  font-family: var(--af-font);
+  background: var(--af-bg);
+  color: var(--af-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------------- 布局工具类 ---------------- */
+.af-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.af-page {
+  padding: var(--af-sp-6);
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+.af-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--af-sp-2);
+}
+.af-flex-fill {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---------------- 通用工具类 ---------------- */
+.af-muted {
+  color: var(--af-text-secondary);
+}
+.af-dim {
+  color: var(--af-text-tertiary);
+}
+.af-mono {
+  font-family: var(--af-font-mono);
+  font-size: 12px;
+}
+
+/* 统一卡片：白底、细边、轻阴影，hover 抬升 + 主色边 */
+.af-card {
+  background: var(--af-surface);
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-lg);
+  box-shadow: var(--af-shadow-sm);
+  transition:
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+.af-card--hover {
+  cursor: pointer;
+}
+.af-card--hover:hover {
+  border-color: var(--af-primary);
+  box-shadow: var(--af-shadow-md);
+}
+
+/* 暗色代码块 */
+.af-code-block {
+  font-family: var(--af-font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: var(--af-sp-3);
+  border-radius: var(--af-radius);
+  overflow: auto;
+  margin: 0;
+}
+
+/* ---------------- 节点面板（左侧节点库 item） ---------------- */
 .node-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 10px; margin: 6px 0; border: 1px solid #e8e8e8;
-  border-radius: 6px; background: #fff; cursor: grab; user-select: none;
+  display: flex;
+  align-items: center;
+  gap: var(--af-sp-2);
+  padding: 8px 10px;
+  margin: 6px 0;
+  border: 1px solid var(--af-border);
+  border-radius: var(--af-radius-sm);
+  background: var(--af-surface);
+  color: var(--af-text);
+  cursor: grab;
+  user-select: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
-.node-item:hover { border-color: #1677ff; box-shadow: 0 1px 4px rgba(22,119,255,.15); }
+.node-item:hover {
+  border-color: var(--af-primary);
+  background: var(--af-primary-soft);
+  box-shadow: var(--af-shadow-sm);
+}
+.node-item__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.node-item__icon {
+  display: inline-flex;
+  font-size: 15px;
+  flex: none;
+}
+.cat-tag {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--af-text-tertiary);
+  margin: 14px 0 4px;
+}
 
-/* custom node card on canvas */
+/* ---------------- 画布节点卡片（暗色） ---------------- */
 .flow-node {
-  min-width: 160px; border-radius: 8px; background: #fff;
-  border: 1px solid #d9d9d9; box-shadow: 0 1px 4px rgba(0,0,0,.08); font-size: 12px;
+  min-width: 168px;
+  border-radius: 10px;
+  background: var(--af-node-bg);
+  border: 1px solid var(--af-node-border);
+  box-shadow: var(--af-shadow-md);
+  color: var(--af-node-text);
+  font-size: 12px;
+  overflow: hidden;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  /* 头部强调色由各节点通过 --node-accent 变量注入 */
+  --node-accent: var(--af-primary);
 }
-.flow-node.selected { border-color: #1677ff; box-shadow: 0 0 0 2px rgba(22,119,255,.2); }
-.flow-node__header { display: flex; align-items: center; gap: 6px; padding: 8px 10px; border-bottom: 1px solid #f0f0f0; font-weight: 600; }
-.flow-node__body { padding: 8px 10px; color: #666; }
-.flow-node__status { width: 8px; height: 8px; border-radius: 50%; margin-left: auto; }
-.status-succeeded { background: #52c41a; }
-.status-failed { background: #ff4d4f; }
-.status-running { background: #faad14; }
+.flow-node:hover {
+  border-color: var(--node-accent);
+}
+.flow-node.selected {
+  border-color: var(--af-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.45);
+}
+.flow-node__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 11px;
+  border-bottom: 1px solid var(--af-node-border);
+  font-weight: 600;
+  /* 顶部强调色细条 */
+  box-shadow: inset 3px 0 0 var(--node-accent);
+}
+.flow-node__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #fff;
+  background: var(--node-accent);
+  flex: none;
+}
+.flow-node__title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.flow-node__body {
+  padding: 8px 11px;
+  color: var(--af-node-text-dim);
+}
+.flow-node__body .af-mono {
+  color: #cbd5e1;
+}
+.flow-node__status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: auto;
+  flex: none;
+}
+.status-succeeded {
+  background: var(--af-success);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.25);
+}
+.status-failed {
+  background: var(--af-danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+.status-running {
+  background: var(--af-warning);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+  animation: af-pulse 1.2s ease-in-out infinite;
+}
+@keyframes af-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
 
-.cat-tag { font-size: 11px; color: #999; margin: 10px 0 4px; }
+/* Vue Flow handle 暗色化 */
+.flow-node .vue-flow__handle {
+  width: 9px;
+  height: 9px;
+  background: var(--af-node-border);
+  border: 2px solid var(--node-accent);
+}
+
+/* ---------------- 暗色画布容器 ---------------- */
+.af-canvas {
+  flex: 1;
+  height: 100%;
+  background: var(--af-canvas-bg);
+}
+.af-canvas .vue-flow__controls {
+  box-shadow: var(--af-shadow-lg);
+  border-radius: var(--af-radius);
+  overflow: hidden;
+}
+.af-canvas .vue-flow__controls-button {
+  background: var(--af-node-bg);
+  border-bottom: 1px solid var(--af-node-border);
+  fill: #cbd5e1;
+}
+.af-canvas .vue-flow__controls-button:hover {
+  background: var(--af-node-bg-soft);
+}
+.af-canvas .vue-flow__minimap {
+  background: var(--af-node-bg);
+  border: 1px solid var(--af-node-border);
+  border-radius: var(--af-radius);
+}
+
+/* ---------------- 无障碍：尊重 reduced-motion ---------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

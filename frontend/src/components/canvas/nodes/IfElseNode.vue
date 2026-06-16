@@ -11,7 +11,14 @@ const branches = computed(() => {
 })
 </script>
 <template>
-  <BaseNode :id="id" :data="data" label="条件分支" icon="🔀" :selected="selected" :branches="branches">
-    <div v-for="b in branches" :key="b" style="font-size:11px;color:#888">↳ {{ b }}</div>
+  <BaseNode
+    :id="id"
+    :data="data"
+    type="if_else"
+    label="条件分支"
+    :selected="selected"
+    :branches="branches"
+  >
+    <div v-for="b in branches" :key="b" class="af-mono" style="font-size: 11px">↳ {{ b }}</div>
   </BaseNode>
 </template>

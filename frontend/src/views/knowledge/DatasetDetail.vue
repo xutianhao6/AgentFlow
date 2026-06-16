@@ -16,7 +16,12 @@ const store = useKnowledgeStore()
 const dsId = route.params.id as string
 const dataset = ref<Dataset | null>(null)
 
-const statusColor: Record<string, string> = { done: 'green', indexing: 'blue', pending: 'default', failed: 'red' }
+const statusColor: Record<string, string> = {
+  done: 'success',
+  indexing: 'processing',
+  pending: 'default',
+  failed: 'error',
+}
 
 async function loadDocs() { await store.loadDocuments(dsId) }
 
@@ -36,7 +41,7 @@ onMounted(async () => {
   <div class="af-page">
     <PageHeader :title="dataset?.name || '知识库'" :subtitle="dataset?.description">
       <template #extra>
-        <a-tag :color="dataset?.index_method === 'high_quality' ? 'blue' : 'orange'">
+        <a-tag :color="dataset?.index_method === 'high_quality' ? 'processing' : 'orange'">
           {{ dataset?.index_method === 'high_quality' ? '高质量索引' : '经济索引' }}
         </a-tag>
       </template>
@@ -56,7 +61,7 @@ onMounted(async () => {
               </template>
             </a-table-column>
             <a-table-column title="操作" width="80">
-              <template #default="{ record }"><a style="color:#ff4d4f" @click="removeDoc(record.id)">删除</a></template>
+              <template #default="{ record }"><a class="ds-del" @click="removeDoc(record.id)">删除</a></template>
             </a-table-column>
           </a-table>
         </a-card>
@@ -72,3 +77,9 @@ onMounted(async () => {
     </a-row>
   </div>
 </template>
+
+<style scoped>
+.ds-del {
+  color: var(--af-danger);
+}
+</style>

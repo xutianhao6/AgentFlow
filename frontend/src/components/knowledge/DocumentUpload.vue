@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { message } from 'ant-design-vue'
 import { knowledgeApi } from '@/api/knowledge'
 import ChunkSettings from './ChunkSettings.vue'
+import { InboxOutlined } from '@ant-design/icons-vue'
 
 const props = defineProps<{ datasetId: string }>()
 const emit = defineEmits<{ uploaded: [] }>()
@@ -33,9 +34,11 @@ async function customRequest({ file }: any) {
       :show-upload-list="false"
       accept=".txt,.md,.pdf,.docx"
     >
-      <p style="font-size:32px;margin:8px 0">📄</p>
+      <p style="margin: 8px 0">
+        <InboxOutlined style="font-size: 38px; color: var(--af-primary)" />
+      </p>
       <p>点击或拖拽文件到此上传（txt / md / pdf / docx）</p>
-      <p style="color:#999;font-size:12px">上传后自动触发切分 + 向量化 / 索引</p>
+      <p class="af-muted" style="font-size: 12px">上传后自动触发切分 + 向量化 / 索引</p>
     </a-upload-dragger>
     <a-spin v-if="uploading" style="margin-top:8px" />
   </div>
